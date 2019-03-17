@@ -1,3 +1,9 @@
 <resources>
+    <string-array name="Blog">
+        <item>BlogTruyen</item>
+        <item>NetTruyen</item>
+        <item>KissManga</item>
+    </string-array>
     <string name="app_name">Manga)Glide</string>
+    <string name="submit">Submit</string>
 </resources>

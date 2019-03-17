@@ -1,20 +1,21 @@
 package com.example.mangaglide;
 
+import android.app.Fragment;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
@@ -22,6 +23,7 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.FixedPreloadSizeProvider;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +33,40 @@ public class Manga extends Fragment {
     private final int imageWidthPixels = 1024;
     private final int imageHeightPixels = 768;
     private ImageURLInterface myUrls;
-    private String url = "https://blogtruyen.com/c2240/one-piece-chap-2";
+    private final static String LIST_STATE_KEY = "recycler_list_state";
+    private LinearLayoutManager layoutManager;
+    private Parcelable listState;
+    private ArrayList<String> all_url;
+    private int current;
+    private String[] url;
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        //save list state
+        listState = layoutManager.onSaveInstanceState();
+        outState.putParcelable(LIST_STATE_KEY, listState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null) listState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(listState != null){
+            layoutManager.onRestoreInstanceState(listState);
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //retrieve data from bundle
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,25 +76,34 @@ public class Manga extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        myUrls = ImageURLInterface.create(url);
+        all_url = ((Reading) this.getActivity()).getAll_url();
+        current = ((Reading) this.getActivity()).getCurrent();
+        url = new String[1];
+        url[0] = all_url.get(all_url.size() - 1  - current);
+        url[0] = url[0].substring(0,8) + url[0].substring(10);
+        System.out.println("get url" + url[0]);
+        myUrls = ImageURLInterface.create(url[0]);
+
+        //set up recycler view
         ListPreloader.PreloadSizeProvider sizeProvider = new FixedPreloadSizeProvider(imageWidthPixels, imageHeightPixels);
         ListPreloader.PreloadModelProvider modelProvider = new MyPreloadModelProvider();
+
         RecyclerViewPreloader<Image> preloader =
                 new RecyclerViewPreloader<>(Glide.with(this), modelProvider, sizeProvider, 20);
         RecyclerView recyclerView = view.findViewById(R.id.rv_images);
         recyclerView.addOnScrollListener(preloader);
 
         //set layout
-        LinearLayoutManager layoutManager =
-                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-
-        recyclerView.setAdapter(new ImageAdapter(myUrls, this));
         recyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()),
                 DividerItemDecoration.VERTICAL));
-    }
 
+        recyclerView.setAdapter(new ImageAdapter(myUrls, this, recyclerView));
+
+
+    }
     private class MyPreloadModelProvider implements ListPreloader.PreloadModelProvider{
         @NonNull
         @Override
@@ -77,4 +121,40 @@ public class Manga extends Fragment {
             return Glide.with(Manga.this).load(item).override(imageWidthPixels, imageHeightPixels);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().finish();
+    }
+
+
+    public String next(){
+        String url_next = "";
+        if (current + 1 < all_url.size()){
+            int next = current + 1;
+            url_next = all_url.get(all_url.size() - 1  - next);
+            url_next = url_next.substring(0,8) + url_next.substring(10);
+        }
+        return url_next;
+    }
+
+    public String prev(){
+        String url_prev = "";
+        if (current > 0){
+            int prev = current - 1;
+            url_prev = all_url.get(all_url.size() - 1  - prev);
+            url_prev = url_prev.substring(0,8) + url_prev.substring(10);
+        }
+        return url_prev;
+    }
+
+    public void setMyUrls(ImageURLInterface myUrls) {
+        this.myUrls = myUrls;
+    }
+
+    public void setCurrent(int current) {
+        this.current += current;
+    }
+
 }
