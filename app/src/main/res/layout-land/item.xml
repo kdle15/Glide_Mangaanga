@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/item_image"
         android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         android:contentDescription="TODO"/>
 
 </FrameLayout>

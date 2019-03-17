@@ -7,10 +7,9 @@
     tools:context=".MainActivity">
 
     <fragment
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:id="@+id/manga"
-        android:name="com.example.mangaglide.Manga">
-    </fragment>
+        android:name="com.example.mangaglide.Manga"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></fragment>
 
 </android.support.constraint.ConstraintLayout>
