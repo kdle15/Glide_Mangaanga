@@ -10,10 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+
+import java.util.concurrent.ExecutionException;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder>{
     private Fragment fragment;
     private ImageURLInterface images;
+    private final int Landscape_width = 1024*7;
 
     ImageAdapter(ImageURLInterface images, Fragment fragment){
         this.fragment = fragment;
@@ -33,13 +37,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
 
     @Override
     public void onBindViewHolder(@NonNull ImageAdapterViewHolder imageAdapterViewHolder, int i) {
-        ImageView imageView = imageAdapterViewHolder.imageView;
+        final ImageView imageView = imageAdapterViewHolder.imageView;
         String currentUrl = images.get(i);
-
+        // In landscape
         int imageWidthPixels = 1024*4;
         int imageHeightPixels = 768*4;
         Glide.with(fragment)
-                .load(currentUrl).fitCenter()
+                .load(currentUrl)
+                .fitCenter()
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .override(imageWidthPixels, imageHeightPixels)
                 .into(imageView);
     }

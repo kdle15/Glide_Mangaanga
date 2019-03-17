@@ -31,7 +31,7 @@ public class Manga extends Fragment {
     private final int imageWidthPixels = 1024;
     private final int imageHeightPixels = 768;
     private ImageURLInterface myUrls;
-    private String url = "https://blogtruyen.com/c2240/one-piece-chap-1";
+    private String url = "https://blogtruyen.com/c2240/one-piece-chap-2";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
