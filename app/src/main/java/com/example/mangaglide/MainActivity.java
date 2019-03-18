@@ -78,6 +78,7 @@ public class MainActivity extends FragmentActivity {
                 switch (Blog) {
                     case "BlogTruyen":
                         try {
+                            //using querry manga class to get all the manga with keyword
                             ar_querry_item = new Querry_Manga().execute(querry1 + content).get();
                             querry.removeAllViews();
                             if(ar_querry_item != null){
@@ -98,10 +99,12 @@ public class MainActivity extends FragmentActivity {
                                         public void onClick(View v) {
                                             onClik_manga = q.getUrl();
                                             //new intent go here
-                                            Intent i = new Intent(MainActivity.this, Manga_Page.class);
-                                            onClik_manga = onClik_manga.substring(0, 8) + onClik_manga.substring(10);
-                                            i.putExtra("EXTRA_MESSAGE", onClik_manga);
-                                            startActivity(i);
+//                                            Intent i = new Intent(MainActivity.this, Manga_Page.class);
+//                                            onClik_manga = onClik_manga.substring(0, 8) + onClik_manga.substring(10);
+//                                            i.putExtra("EXTRA_MESSAGE", onClik_manga);
+//                                            startActivity(i);
+
+
 
                                             System.out.println("all link go here " + onClik_manga);
                                         }

@@ -1,44 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:weightSum="2">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingLeft="15dp"
-        android:paddingRight="15dp"
         android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp"
+        android:layout_weight="1">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="4">
 
             <Spinner
                 android:id="@+id/spinner"
-                android:layout_width="227dp"
-                android:layout_height="wrap_content"
-                android:background="#ffffff"/>
+                android:layout_width="54dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:layout_marginRight="5dp"/>
 
             <EditText
                 android:id="@+id/edit_text"
-                android:layout_width="200dp"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:hint="type_here"
-                android:background="#ffffff"/>
+                android:background="#ffffff"
+                android:hint="@string/type_here"
+                android:layout_weight="2"/>
 
             <Button
                 android:id="@+id/button_submit"
-                android:layout_width="95dp"
-                android:layout_height="wrap_content"
-                android:text="@string/submit" />
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/submit"
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <ScrollView
@@ -55,19 +63,113 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="List started here" />
+                    android:textColor="#ffffff"
+                    android:text="@string/list_started_here" />
+
                 <LinearLayout
+                    android:id="@+id/querryLinear"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/querryLinear"
                     android:orientation="vertical">
 
                 </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
-
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/secondLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
+                        android:text="TITLE" />
+
+                    <TextView
+                        android:id="@+id/totalchap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chapter total"
+                        android:textColor="#ffffff"/>
+
+                    <TextView
+                        android:id="@+id/cate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Category"
+                        android:textColor="#ffffff"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Content"
+                android:textColor="#ffffff"/>
+
+
+            <SeekBar
+                android:id="@+id/seaker"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:background="#ffffff"/>
+
+
+            <TextView
+                android:id="@+id/currentchap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:paddingTop="5dp"
+                android:text="0"
+                android:textColor="#ffffff"/>
+
+
+            <Button
+                android:id="@+id/getChap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Submit" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

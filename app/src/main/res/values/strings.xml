@@ -6,4 +6,6 @@
     </string-array>
     <string name="app_name">Manga)Glide</string>
     <string name="submit">Submit</string>
+    <string name="list_started_here">List started here</string>
+    <string name="type_here">type_here</string>
 </resources>

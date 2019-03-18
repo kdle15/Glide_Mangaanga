@@ -15,8 +15,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
-import java.util.ArrayList;
-
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder>{
     private Fragment fragment;
@@ -52,7 +50,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
         Glide.with(fragment)
                 .load(currentUrl)
                 .fitCenter()
-                //.transition(DrawableTransitionOptions.withCrossFade())
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .override(imageWidthPixels, imageHeightPixels)
                 .into(imageView);
 
