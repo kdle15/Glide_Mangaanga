@@ -122,6 +122,7 @@ public class Manga extends Fragment {
 
     public void setCurrent(int current) {
         this.current += current;
+        ((Reading) getActivity()).setCurrent(current);
     }
 
 }

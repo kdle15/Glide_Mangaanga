@@ -46,8 +46,8 @@
                 android:id="@+id/button_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/submit"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:text="@string/submit" />
         </LinearLayout>
 
         <ScrollView
@@ -100,32 +100,50 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#ffffff"
-                        android:text="TITLE" />
+                        android:text="TITLE"
+                        android:textColor="#ffffff" />
 
-                    <TextView
-                        android:id="@+id/totalchap"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Chapter total"
-                        android:textColor="#ffffff"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="23dp"
+                        android:orientation="horizontal"
+                        android:weightSum="5">
+                        <TextView
+                            android:id="@+id/totalchap"
+                            android:layout_width="wrap_content"
+                            android:layout_height="23dp"
+                            android:text="Chapter total"
+                            android:textColor="#ffffff"
+                            android:layout_weight="3"
+                            />
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="23dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/holo_red_dark"
+                            android:layout_marginRight="5dp"/>
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="23dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/darker_gray" />
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/cate"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Category"
                         android:textColor="#ffffff"/>
@@ -150,7 +168,7 @@
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
                 android:paddingRight="5dp"
-                android:paddingBottom="5dp"/>
+                android:paddingBottom="5dp" />
 
 
             <Button

@@ -1,5 +1,6 @@
 package com.example.mangaglide;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 public class Reading extends FragmentActivity {
     private ArrayList<String> all_url;
     private int current;
-    private Manga fragmentSimple;
     private final String SIMPLE_FRAGMENT_TAG = "myfragmenttag";
 
     public ArrayList<String> getAll_url() {
@@ -22,6 +22,10 @@ public class Reading extends FragmentActivity {
 
     public int getCurrent() {
         return current;
+    }
+
+    public void setCurrent(int current) {
+        this.current += current;
     }
 
     @Override
@@ -61,5 +65,16 @@ public class Reading extends FragmentActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //have to pass the data on this stage
+        Intent intent = new Intent();
+        intent.putExtra("Return", current);
+        setResult(RESULT_OK, intent);
+        System.out.println("Return message is" + current);
+        finish();
+        super.onBackPressed();
     }
 }

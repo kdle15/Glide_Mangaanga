@@ -3,7 +3,10 @@ package com.example.mangaglide;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -24,8 +27,6 @@ import java.util.concurrent.ExecutionException;
  * Initiate fragment
  */
 public class MainActivity extends FragmentActivity {
-
-    private ImageView tv;
     private Spinner spinner;
     private Button submit;
     private Button currentChap;
@@ -42,19 +43,8 @@ public class MainActivity extends FragmentActivity {
     private String current_chap = "0";
     private Manga_info manga = null;
     private final String querry1 = "https://m.blogtruyen.com/timkiem?keyword=";
+    private final static int REQUEST_CODE_1 = 1;
     private ArrayList<Link_info> ar_querry_item = null;
-    private String pass_url = "";
-    private ArrayList<String> all_url;
-    private int current;
-
-    public ArrayList<String> getAll_url() {
-        return all_url;
-    }
-
-    public int getCurrent() {
-        return current;
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,8 +150,7 @@ public class MainActivity extends FragmentActivity {
                                                             Intent i = new Intent(getApplicationContext(), Reading.class);
                                                             i.putStringArrayListExtra("ALLURLs", manga.getChaps());
                                                             i.putExtra("CURRENT_INDEX", current_chap);
-                                                            System.out.println("chap url is" + pass_url);
-                                                            startActivity(i);
+                                                            startActivityForResult(i, REQUEST_CODE_1);
                                                         }
                                                     });
                                                 }
@@ -202,5 +191,25 @@ public class MainActivity extends FragmentActivity {
         });
         ar_querry_item = new ArrayList<>();
         querry = findViewById(R.id.querryLinear);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+            // This request code is set by startActivityForResult(intent, REQUEST_CODE_1) method.
+            case REQUEST_CODE_1:
+                System.out.println("hello123 " + resultCode);
+                if(resultCode == RESULT_OK)
+                {
+                    int messageReturn = data.getIntExtra("Return",0);
+                    System.out.println("Return message is" + messageReturn);
+                    current_chap = Integer.toString(messageReturn);
+                    seekBar.setProgress(Integer.parseInt(current_chap), true);
+                    currentChap.setText(manga.getNamechap().get(total_chapter_int - Integer.parseInt(current_chap)));
+                }
+        }
     }
 }

@@ -84,8 +84,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
     }
 
     private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
-        private static final int SWIPE_MIN_DISTANCE = 20;
-        private static final int SWIPE_THRESHOLD_VELOCITY = 40;
+        private static final int SWIPE_MIN_DISTANCE = 5;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 20;
         @Override
         public boolean onDown(MotionEvent e) {
             return true;
