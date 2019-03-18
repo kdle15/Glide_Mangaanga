@@ -1,19 +1,15 @@
 package com.example.mangaglide;
 
 import android.app.Fragment;
-import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -33,49 +29,20 @@ public class Manga extends Fragment {
     private final int imageWidthPixels = 1024;
     private final int imageHeightPixels = 768;
     private ImageURLInterface myUrls;
-    private final static String LIST_STATE_KEY = "recycler_list_state";
     private LinearLayoutManager layoutManager;
-    private Parcelable listState;
     private ArrayList<String> all_url;
     private int current;
     private String[] url;
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        //save list state
-        listState = layoutManager.onSaveInstanceState();
-        outState.putParcelable(LIST_STATE_KEY, listState);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState != null) listState = savedInstanceState.getParcelable(LIST_STATE_KEY);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(listState != null){
-            layoutManager.onRestoreInstanceState(listState);
-        }
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //retrieve data from bundle
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Drawable d = ResourcesCompat.getDrawable(getResources(), R.drawable.p, null);
+        //2
         return inflater.inflate(R.layout.manga_layout, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        //3
         all_url = ((Reading) this.getActivity()).getAll_url();
         current = ((Reading) this.getActivity()).getCurrent();
         url = new String[1];

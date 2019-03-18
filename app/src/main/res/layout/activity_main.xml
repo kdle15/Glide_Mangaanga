@@ -7,7 +7,8 @@
     android:background="#000000"
     android:orientation="vertical"
     tools:context=".MainActivity"
-    android:weightSum="2">
+    android:weightSum="2"
+    android:id="@+id/Frame">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -149,11 +150,10 @@
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
                 android:paddingRight="5dp"
-                android:paddingBottom="5dp"
-                android:background="#ffffff"/>
+                android:paddingBottom="5dp"/>
 
 
-            <TextView
+            <Button
                 android:id="@+id/currentchap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -162,14 +162,6 @@
                 android:paddingTop="5dp"
                 android:text="0"
                 android:textColor="#ffffff"/>
-
-
-            <Button
-                android:id="@+id/getChap"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="Submit" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -12,6 +12,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
@@ -99,6 +101,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
                     ((Manga) fragment).setMyUrls(myUrls);
                     recyclerView.swapAdapter(new ImageAdapter(myUrls, fragment, recyclerView), true);
                     ((Manga) fragment).setCurrent(1);
+                    Toast.makeText(fragment.getContext(), "NEXT CHAPTER", Toast.LENGTH_SHORT).show();
                 }
                 return false; // Right to left
             }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
@@ -108,6 +111,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
                     ((Manga) fragment).setMyUrls(myUrls);
                     recyclerView.swapAdapter(new ImageAdapter(myUrls, fragment, recyclerView), true);
                     ((Manga) fragment).setCurrent(-1);
+                    Toast.makeText(fragment.getContext(), "PREVIOUS CHAPTER", Toast.LENGTH_SHORT).show();
                 }
                 return false; // Left to right
             }

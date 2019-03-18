@@ -1,27 +1,19 @@
 package com.example.mangaglide;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -33,24 +25,49 @@ import java.util.concurrent.ExecutionException;
  */
 public class MainActivity extends FragmentActivity {
 
-    ImageView tv;
-    Spinner spinner;
-    Button submit;
-    EditText text;
-    String Blog = null;
-    String onClik_manga = null;
-    LinearLayout querry;
+    private ImageView tv;
+    private Spinner spinner;
+    private Button submit;
+    private Button currentChap;
+    private EditText text;
+    private String Blog = null;
+    private String onClik_manga = null;
+    private LinearLayout querry;
+    private TextView title;
+    private TextView totalChap;
+    private TextView category;
+    private TextView content;
+    private SeekBar seekBar;
+    private int total_chapter_int = 0;
+    private String current_chap = "0";
+    private Manga_info manga = null;
     private final String querry1 = "https://m.blogtruyen.com/timkiem?keyword=";
-    ArrayList<Link_info> ar_querry_item = null;
+    private ArrayList<Link_info> ar_querry_item = null;
+    private String pass_url = "";
+    private ArrayList<String> all_url;
+    private int current;
+
+    public ArrayList<String> getAll_url() {
+        return all_url;
+    }
+
+    public int getCurrent() {
+        return current;
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //Spinner
         spinner = (Spinner) findViewById(R.id.spinner);
+        title = findViewById(R.id.title);
+        totalChap = findViewById(R.id.totalchap);
+        category = findViewById(R.id.cate);
+        content = findViewById(R.id.content);
+        seekBar = findViewById(R.id.seaker);
+        currentChap = findViewById(R.id.currentchap);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.Blog, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -74,12 +91,17 @@ public class MainActivity extends FragmentActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String content = text.getText().toString();
+                String content_string= text.getText().toString();
+                InputMethodManager inputManager =
+                        (InputMethodManager) MainActivity.this.getBaseContext().
+                                getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(
+                        MainActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 switch (Blog) {
                     case "BlogTruyen":
                         try {
                             //using querry manga class to get all the manga with keyword
-                            ar_querry_item = new Querry_Manga().execute(querry1 + content).get();
+                            ar_querry_item = new Querry_Manga().execute(querry1 + content_string).get();
                             querry.removeAllViews();
                             if(ar_querry_item != null){
                                 System.out.println("How many " + ar_querry_item.size());
@@ -88,7 +110,6 @@ public class MainActivity extends FragmentActivity {
                                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                                             LinearLayout.LayoutParams.WRAP_CONTENT, // Width of TextView
                                             LinearLayout.LayoutParams.WRAP_CONTENT); // Height of TextView
-
                                     // Apply the layout parameters to TextView widget
                                     tv.setLayoutParams(lp);
                                     tv.setText(q.getTitle());
@@ -97,16 +118,58 @@ public class MainActivity extends FragmentActivity {
                                     tv.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
+                                            //get the link of the manga from search
                                             onClik_manga = q.getUrl();
-                                            //new intent go here
-//                                            Intent i = new Intent(MainActivity.this, Manga_Page.class);
-//                                            onClik_manga = onClik_manga.substring(0, 8) + onClik_manga.substring(10);
-//                                            i.putExtra("EXTRA_MESSAGE", onClik_manga);
-//                                            startActivity(i);
+                                            //change link from mobile to desktop
+                                            onClik_manga = onClik_manga.substring(0, 8) + onClik_manga.substring(10);
+                                            System.out.println("URL is" + onClik_manga);
+                                            String[] url = new String[]{onClik_manga};
+                                            try {
+                                                manga = new GET_Manga_info().execute(url).get();
+                                                if(manga != null){
+                                                    title.setText(manga.getTitle());
+                                                    totalChap.setText("Chap " + manga.getTotal_chap());
+                                                    total_chapter_int = Integer.parseInt(manga.getTotal_chap()) - 1;
+                                                    seekBar.setMax(total_chapter_int);
+                                                    seekBar.setProgress(0);
+                                                    currentChap.setText(manga.getNamechap().get(total_chapter_int - Integer.parseInt(current_chap)));
+                                                    category.setText(manga.getCategory());
+                                                    content.setText(manga.getIntroduction());
 
+                                                    seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                                        @Override
+                                                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                                            current_chap = String.valueOf(progress);
+                                                            currentChap.setText(manga.getNamechap().get(total_chapter_int - Integer.parseInt(current_chap)));
+                                                        }
 
+                                                        @Override
+                                                        public void onStartTrackingTouch(SeekBar seekBar) {
 
-                                            System.out.println("all link go here " + onClik_manga);
+                                                        }
+
+                                                        @Override
+                                                        public void onStopTrackingTouch(SeekBar seekBar) {
+
+                                                        }
+                                                    });
+
+                                                    currentChap.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            Intent i = new Intent(getApplicationContext(), Reading.class);
+                                                            i.putStringArrayListExtra("ALLURLs", manga.getChaps());
+                                                            i.putExtra("CURRENT_INDEX", current_chap);
+                                                            System.out.println("chap url is" + pass_url);
+                                                            startActivity(i);
+                                                        }
+                                                    });
+                                                }
+                                            } catch (ExecutionException e) {
+                                                e.printStackTrace();
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     });
                                     // Set a text color for TextView text
@@ -137,7 +200,6 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         });
-
         ar_querry_item = new ArrayList<>();
         querry = findViewById(R.id.querryLinear);
     }
