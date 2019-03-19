@@ -69,7 +69,7 @@ public class Reading extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        //have to pass the data on this stage
+        //have to pass the data on this method
         Intent intent = new Intent();
         intent.putExtra("Return", current);
         setResult(RESULT_OK, intent);

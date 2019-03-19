@@ -19,9 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -37,10 +43,6 @@ public class MainActivity extends FragmentActivity {
     private String Blog = null;
     private String onClik_manga = null;
     private LinearLayout querry;
-    private TextView title;
-    private TextView totalChap;
-    private TextView category;
-    private TextView content;
     private SeekBar seekBar;
     private int total_chapter_int = 0;
     private String current_chap = "0";
@@ -48,8 +50,17 @@ public class MainActivity extends FragmentActivity {
     private final String querry1 = "https://m.blogtruyen.com/timkiem?keyword=";
     private final static int REQUEST_CODE_1 = 1;
     private ArrayList<Link_info> ar_querry_item = null;
+    private HashMap<String, String> file_content;
     String filename = "myfile";
     private File f;
+
+    public String getOnClik_manga() {
+        return onClik_manga;
+    }
+
+    public HashMap<String, String> getFile_content() {
+        return file_content;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +68,6 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
         //normal stuff
         spinner = (Spinner) findViewById(R.id.spinner);
-        title = findViewById(R.id.title);
-        totalChap = findViewById(R.id.totalchap);
-        category = findViewById(R.id.cate);
-        content = findViewById(R.id.content);
         seekBar = findViewById(R.id.seaker);
         currentChap = findViewById(R.id.currentchap);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -147,16 +154,15 @@ public class MainActivity extends FragmentActivity {
             }
         });
         ar_querry_item = new ArrayList<>();
+        file_content = new HashMap<>();
         querry = findViewById(R.id.querryLinear);
 
         //File access
         accessFile = findViewById(R.id.accessfile);
         addtoFile = findViewById(R.id.addtolist);
-
-        //TODO: remove when done
+        //openn file    
         f = new File(MainActivity.this.getFilesDir(), filename);
-        f.delete();
-        f = new File(MainActivity.this.getFilesDir(), filename);
+        ReadFile();
         //Read text from file
         accessFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,7 +195,6 @@ public class MainActivity extends FragmentActivity {
         {
             // This request code is set by startActivityForResult(intent, REQUEST_CODE_1) method.
             case REQUEST_CODE_1:
-                System.out.println("hello123 " + resultCode);
                 if(resultCode == RESULT_OK)
                 {
                     int messageReturn = data.getIntExtra("Return",0);
@@ -220,75 +225,40 @@ public class MainActivity extends FragmentActivity {
     }
 
     //input a link out put update ui with manga detail coresspond to the passed link
-    void manga_info(String url){
+    public void manga_info(String url){
         //change link from mobile to desktop
         url = url.substring(0, 8) + url.substring(10);
+        onClik_manga = url;
         System.out.println("URL is" + url);
-        String[] urls = new String[]{url};
+        String[] urls = new String[]{onClik_manga};
         try {
-            manga = new GET_Manga_info().execute(urls).get();
-            if(manga != null){
-                title.setText(manga.getTitle());
-                totalChap.setText("Chap " + manga.getTotal_chap());
-                total_chapter_int = Integer.parseInt(manga.getTotal_chap()) - 1;
-                seekBar.setMax(total_chapter_int);
-                seekBar.setProgress(0);
-                currentChap.setText(manga.getNamechap().get(total_chapter_int - Integer.parseInt(current_chap)));
-                category.setText(manga.getCategory());
-                content.setText(manga.getIntroduction());
-
-                //add manga to file
-                addtoFile.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //create a file
-                        String fileContents = manga.getTitle()+"/n";
-                        String URLcontents = onClik_manga+"/n";
-                        FileOutputStream outputStream;
-                        try {
-                            outputStream = openFileOutput(filename, Context.MODE_APPEND);
-                            outputStream.write(fileContents.getBytes());
-                            outputStream.write(URLcontents.getBytes());
-                            outputStream.flush();
-                            outputStream.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        current_chap = String.valueOf(progress);
-                        currentChap.setText(manga.getNamechap().get(total_chapter_int - Integer.parseInt(current_chap)));
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-
-                    }
-                });
-
-                currentChap.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(getApplicationContext(), Reading.class);
-                        i.putStringArrayListExtra("ALLURLs", manga.getChaps());
-                        i.putExtra("CURRENT_INDEX", current_chap);
-                        startActivityForResult(i, REQUEST_CODE_1);
-                    }
-                });
-            }
+            manga = new GET_Manga_info(this).execute(urls).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+
+    //Read a File into HashMap
+    void ReadFile(){
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            String line;
+            while ((line = br.readLine()) != null) {
+                file_content.put(line, br.readLine());
+            }
+            br.close();
+        } catch (FileNotFoundException e) {
+
+        } catch (IOException e) {
+
+        }
+
+    }
+
+    public void setOnClik_manga(String onClik_manga) {
+        this.onClik_manga = onClik_manga;
+    }
+
 }
