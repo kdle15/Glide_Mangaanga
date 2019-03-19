@@ -64,9 +64,10 @@ public class Manga extends Fragment {
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()),
-                DividerItemDecoration.VERTICAL));
-
+        DividerItemDecoration itemDecorator = new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL);
+        //5dp space between item
+        itemDecorator.setDrawable(getActivity().getDrawable(R.drawable.divider));
+        recyclerView.addItemDecoration(itemDecorator);
         recyclerView.setAdapter(new ImageAdapter(myUrls, this, recyclerView));
 
 

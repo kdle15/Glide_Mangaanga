@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity"
     android:weightSum="2"
-    android:id="@+id/Frame">
+    android:id="@+id/Main">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -127,13 +127,15 @@
                             />
 
                         <Button
+                            android:id="@+id/addtolist"
                             android:layout_width="wrap_content"
                             android:layout_height="23dp"
+                            android:layout_marginRight="5dp"
                             android:layout_weight="1"
-                            android:background="@android:color/holo_red_dark"
-                            android:layout_marginRight="5dp"/>
+                            android:background="@android:color/holo_red_dark" />
 
                         <Button
+                            android:id="@+id/accessfile"
                             android:layout_width="wrap_content"
                             android:layout_height="23dp"
                             android:layout_weight="1"
