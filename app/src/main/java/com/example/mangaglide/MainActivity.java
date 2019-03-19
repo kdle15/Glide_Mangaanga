@@ -200,6 +200,7 @@ public class MainActivity extends FragmentActivity {
                     System.out.println("Return message is" + messageReturn);
                     current_chap = Integer.toString(messageReturn);
                     seekBar.setProgress(Integer.parseInt(current_chap), true);
+                    total_chapter_int = Integer.parseInt(manga.getTotal_chap()) - 1;
                     currentChap.setText(manga.getNamechap().get(total_chapter_int - Integer.parseInt(current_chap)));
                 }
         }
