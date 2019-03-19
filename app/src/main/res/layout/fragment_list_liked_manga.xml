@@ -4,23 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".List_liked_manga"
-    android:paddingLeft="15dp"
+    android:paddingStart="15dp"
     android:paddingTop="10dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="RtlSymmetry">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/test"
-        android:text="BOOKMARK MANGA"
+        android:text="@string/bookmark_manga"
         android:textColor="#ffffff"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/list_frame">
 
-    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/list_frame">
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

@@ -23,7 +23,6 @@ import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ public class MainActivity extends FragmentActivity {
     private Button submit;
     private Button currentChap;
     private Button accessFile;
-    private Button addtoFile;
     private EditText text;
     private String Blog = null;
     private String onClik_manga = null;
@@ -159,8 +157,9 @@ public class MainActivity extends FragmentActivity {
 
         //File access
         accessFile = findViewById(R.id.accessfile);
-        addtoFile = findViewById(R.id.addtolist);
-        //openn file    
+        //enable this 2 lines when fixing
+//        f = new File(MainActivity.this.getFilesDir(), filename);
+//        f.delete();
         f = new File(MainActivity.this.getFilesDir(), filename);
         ReadFile();
         //Read text from file

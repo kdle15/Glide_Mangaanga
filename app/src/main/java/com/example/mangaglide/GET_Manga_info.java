@@ -40,7 +40,6 @@ public class GET_Manga_info extends AsyncTask<String, Void, Manga_info> {
 
     @Override
     protected Manga_info doInBackground(String... urls) {
-        System.out.println("hello1");
         Manga_info c = null;
         String title_name = urls[0];
         final StringBuilder builder = new StringBuilder();
@@ -83,14 +82,12 @@ public class GET_Manga_info extends AsyncTask<String, Void, Manga_info> {
         } catch (IOException e) {
             builder.append("Error : ").append(e.getMessage()).append("\n");
         }
-        System.out.println("hello2" + title_name);
         return c;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onPostExecute(final Manga_info manga) {
-        System.out.println("hello3");
         TextView title = mAct.findViewById(R.id.title);
         TextView totalChap = mAct.findViewById(R.id.totalchap);
         TextView category = mAct.findViewById(R.id.cate);
@@ -98,6 +95,7 @@ public class GET_Manga_info extends AsyncTask<String, Void, Manga_info> {
         SeekBar seekBar = mAct.findViewById(R.id.seaker);
         final Button currentChap = mAct.findViewById(R.id.currentchap);
         final Button addtoFile = mAct.findViewById(R.id.addtolist);
+
         if(manga != null){
             title.setText(manga.getTitle());
             totalChap.setText("Chap " + manga.getTotal_chap());
@@ -169,13 +167,12 @@ public class GET_Manga_info extends AsyncTask<String, Void, Manga_info> {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void remove_all_fragment(){
-        System.out.println("hello4");
         for (Fragment fragment: mAct.getFragmentManager().getFragments()) {
             mAct.getFragmentManager().beginTransaction().remove(fragment).commit();
         }
     }
 
-
+    //always update file after tap the bookmark button
     private void WriteFile(){
         String filename = "myfile";
         File f = f = new File(mAct.getFilesDir(), filename);

@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 
@@ -41,35 +42,35 @@ public class List_liked_manga extends Fragment {
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
             String line;
-            int i = 0;
-
+            HashMap<String, String> file_content = ((MainActivity) getActivity()).getFile_content();
             while ((line = br.readLine()) != null) {
-                if(i%2 != 0){
-                    TextView b = new TextView(this.getContext());
-                    b.setTextSize(20);
-                    b.setText(line);
-                    b.setTextColor(Color.WHITE);
-                    b.setClickable(true);
-                    final String r = line;
-                    b.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ((MainActivity) getActivity()).setOnClik_manga(s);
-                            String[] urls = new String[]{s};
-                            try {
-                                Manga_info manga = new GET_Manga_info(List_liked_manga.this.getActivity()).execute(urls).get();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            }
+                TextView c = new TextView(this.getContext());
+                c.setText("------------------------------------------------------------------------------------------------------------");
+                c.setTextColor(Color.WHITE);
+                TextView b = new TextView(this.getContext());
+                b.setTextSize(22);
+                b.setText(file_content.get(line));
+                b.setTextColor(Color.WHITE);
+                b.setClickable(true);
+                final String r = line;
+                line = br.readLine();
+                b.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        System.out.println("what is the link i clicked" + r);
+                        ((MainActivity) getActivity()).setOnClik_manga(r);
+                        String[] urls = new String[]{r};
+                        try {
+                            Manga_info manga = new GET_Manga_info(List_liked_manga.this.getActivity()).execute(urls).get();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
                         }
-                    });
-                    frame.addView(b);
-                }else {
-                    s = line;
-                }
-                i++;
+                    }
+                });
+                frame.addView(c);
+                frame.addView(b);
             }
             br.close();
         }
