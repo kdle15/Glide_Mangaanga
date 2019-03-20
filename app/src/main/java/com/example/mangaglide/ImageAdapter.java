@@ -3,6 +3,8 @@ package com.example.mangaglide;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 
@@ -51,9 +54,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
         int imageHeightPixels = 768*4;
         Glide.with(fragment)
                 .load(currentUrl)
+                .placeholder(new ColorDrawable(Color.BLACK))
                 .fitCenter()
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .override(imageWidthPixels, imageHeightPixels)
+                .fallback(new ColorDrawable(Color.RED))
+                .error(new ColorDrawable(Color.RED))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView);
 
         mDetector = new GestureDetectorCompat(fragment.getContext(),new MyGestureListener());
@@ -64,6 +71,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
                 return true;
             }
         });
+
+
     }
 
 
@@ -85,7 +94,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
 
     private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         private static final int SWIPE_MIN_DISTANCE = 5;
-        private static final int SWIPE_THRESHOLD_VELOCITY = 20;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 10;
         @Override
         public boolean onDown(MotionEvent e) {
             return true;
@@ -116,6 +125,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
                 return false; // Left to right
             }
             return false;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            System.out.println("you double tap");
+            //recyclerView.swapAdapter(new ImageAdapter(images, fragment, recyclerView), true);
+            ((Manga) fragment).getLayoutManager().scrollToPositionWithOffset(0,0);
+            return true;
         }
     }
 }

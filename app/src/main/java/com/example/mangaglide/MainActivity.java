@@ -206,6 +206,10 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    public void setManga(Manga_info manga) {
+        this.manga = manga;
+    }
+
     //handle back press on fragment
     @Override
     public void onBackPressed() {

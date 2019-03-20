@@ -97,6 +97,8 @@ public class GET_Manga_info extends AsyncTask<String, Void, Manga_info> {
         final Button addtoFile = mAct.findViewById(R.id.addtolist);
 
         if(manga != null){
+            //set back the manga clicked on the main activity
+            ((MainActivity) mAct).setManga(manga);
             title.setText(manga.getTitle());
             totalChap.setText("Chap " + manga.getTotal_chap());
             final int total_chapter_int = Integer.parseInt(manga.getTotal_chap()) - 1;

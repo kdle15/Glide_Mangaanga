@@ -126,4 +126,7 @@ public class Manga extends Fragment {
         ((Reading) getActivity()).setCurrent(current);
     }
 
+    public LinearLayoutManager getLayoutManager() {
+        return layoutManager;
+    }
 }
