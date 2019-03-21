@@ -60,9 +60,10 @@ public class List_liked_manga extends Fragment {
                         System.out.println("what is the link i clicked" + r);
                         ((MainActivity) getActivity()).setOnClik_manga(r);
                         //blog truyen or mangaka
-                        int index = r.indexOf("mangakakalot");
+                        int index1 = r.indexOf("mangakakalot");
+                        int index2 = r.indexOf("manganelo");
                         int site = -3;
-                        if(index == -1){
+                        if(index1 == -1 && index2 == -1){
                             site = 0;
                         }else{
                             site = 1;

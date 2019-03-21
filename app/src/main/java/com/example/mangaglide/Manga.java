@@ -33,7 +33,7 @@ public class Manga extends Fragment {
     private ArrayList<String> all_url;
     private int current;
     private String[] url;
-    private int index;
+    private boolean index;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,8 +48,10 @@ public class Manga extends Fragment {
         current = ((Reading) this.getActivity()).getCurrent();
         url = new String[1];
         url[0] = all_url.get(all_url.size() - 1  - current);
-        index = url[0].indexOf("mangakakalot");
-        if(index == -1){
+        int index1 = url[0].indexOf("mangakakalot");
+        int index2 = url[0].indexOf("manganelo");
+        index = index1 == -1 && index2 == -1;
+        if(index){
             url[0] = url[0].substring(0,8) + url[0].substring(10);
         }
         System.out.println("get url" + url[0]);
@@ -106,7 +108,7 @@ public class Manga extends Fragment {
         if (current + 1 < all_url.size()){
             int next = current + 1;
             url_next = all_url.get(all_url.size() - 1  - next);
-            if(index == -1) {
+            if(index) {
                 url_next = url_next.substring(0, 8) + url_next.substring(10);
             }
         }
@@ -118,7 +120,7 @@ public class Manga extends Fragment {
         if (current > 0){
             int prev = current - 1;
             url_prev = all_url.get(all_url.size() - 1  - prev);
-            if(index == -1){
+            if(index){
                 url_prev = url_prev.substring(0,8) + url_prev.substring(10);
             }
         }

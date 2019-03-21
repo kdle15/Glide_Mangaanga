@@ -189,9 +189,10 @@ public class MainActivity extends FragmentActivity {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
             // Update UI to reflect text being shared
-            int index = sharedText.indexOf("mangakakalot");
+            int index = sharedText.indexOf("mangakakalot") ;
+            int index2 = sharedText.indexOf("manganelo");
             int site = -3;
-            if(index == -1){
+            if(index == -1 && index2 == -1){
                 site = 0;
             }else{
                 site = 1;

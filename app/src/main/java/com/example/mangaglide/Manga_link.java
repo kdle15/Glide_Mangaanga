@@ -12,9 +12,10 @@ public class Manga_link extends ImageURLInterface {
     public Manga_link(String urls) {
         final String[] url = new String[]{urls};
         //if mangaka or not
-        int index = urls.indexOf("mangakakalot");
+        int index1 = urls.indexOf("mangakakalot");
+        int index2 = urls.indexOf("manganelo");
         int site = -3;
-        if(index == -1){
+        if(index1 == -1 && index2 == -1){
             site = 0;
         }else{
             site = 1;
