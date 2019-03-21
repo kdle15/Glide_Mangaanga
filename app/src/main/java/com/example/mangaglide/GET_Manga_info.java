@@ -110,9 +110,9 @@ public class GET_Manga_info extends AsyncTask<String, Void, Manga_info> {
                 Elements category = title.getElementsByTag("li");
                 String cate = "";
                 for(Element p: category){
-                    if(p.text().equals("Genres :")){
-                        Element a = p.getElementsByTag("a").first();
-                        cate += a.text() + " ";
+                    System.out.println("category is here" + p.text());
+                    if(p.text().indexOf("Genres :") != -1){
+                       cate = p.text();
                     }
                 }
 

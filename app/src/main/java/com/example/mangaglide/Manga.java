@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
@@ -31,6 +32,8 @@ public class Manga extends Fragment {
     private ImageURLInterface myUrls;
     private LinearLayoutManager layoutManager;
     private ArrayList<String> all_url;
+    private ImageView iv;
+    private RecyclerView recyclerView;
     private int current;
     private String[] url;
     private boolean index;
@@ -39,6 +42,10 @@ public class Manga extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //2
         return inflater.inflate(R.layout.manga_layout, container, false);
+    }
+
+    public ImageView getIv() {
+        return iv;
     }
 
     @Override
@@ -57,13 +64,28 @@ public class Manga extends Fragment {
         System.out.println("get url" + url[0]);
         myUrls = ImageURLInterface.create(url[0]);
 
+        //default image
+        iv = view.findViewById(R.id.empty_view);
+        iv.setImageResource(R.drawable.error);
+        iv.setClickable(true);
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("you picked");
+                getActivity().getFragmentManager().beginTransaction().remove(Manga.this).commit();
+            }
+        });
+        setup();
+    }
+
+    private void setup(){
         //set up recycler view
         ListPreloader.PreloadSizeProvider sizeProvider = new FixedPreloadSizeProvider(imageWidthPixels, imageHeightPixels);
         ListPreloader.PreloadModelProvider modelProvider = new MyPreloadModelProvider();
 
         RecyclerViewPreloader<Image> preloader =
                 new RecyclerViewPreloader<>(Glide.with(this), modelProvider, sizeProvider, 20);
-        RecyclerView recyclerView = view.findViewById(R.id.rv_images);
+        recyclerView = this.getView().findViewById(R.id.rv_images);
         recyclerView.addOnScrollListener(preloader);
 
         //set layout
@@ -75,9 +97,8 @@ public class Manga extends Fragment {
         itemDecorator.setDrawable(getActivity().getDrawable(R.drawable.divider));
         recyclerView.addItemDecoration(itemDecorator);
         recyclerView.setAdapter(new ImageAdapter(myUrls, this, recyclerView));
-
-
     }
+
     private class MyPreloadModelProvider implements ListPreloader.PreloadModelProvider{
         @NonNull
         @Override

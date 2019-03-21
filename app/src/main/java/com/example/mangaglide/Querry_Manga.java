@@ -54,7 +54,7 @@ public class Querry_Manga extends AsyncTask<String, Void, ArrayList<Link_info>> 
                 Document doc = Jsoup.connect(urls[0]).get();
                 String title = doc.title();
                 Element links = doc.select(".panel_story_list").first();
-                if(links.children().size() != 0){
+                if(links != null){
                     int i = 0;
                     for (Element link : links.children()) {
                         Element h = link.select(".story_name").first();

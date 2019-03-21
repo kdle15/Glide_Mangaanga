@@ -5,7 +5,9 @@ import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
@@ -17,8 +19,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder>{
@@ -52,15 +60,36 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
         // In landscape
         int imageWidthPixels = 1024*4;
         int imageHeightPixels = 768*4;
-        Glide.with(fragment)
-                .load(currentUrl)
+        RequestBuilder<Drawable> requestBuilder = Glide.with(fragment).asDrawable();
+        RequestOptions options = new RequestOptions()
                 .placeholder(new ColorDrawable(Color.BLACK))
                 .fitCenter()
-                .transition(DrawableTransitionOptions.withCrossFade())
                 .override(imageWidthPixels, imageHeightPixels)
                 .fallback(new ColorDrawable(Color.RED))
                 .error(new ColorDrawable(Color.RED))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
+
+        Glide.with(fragment)
+                .load(currentUrl)
+                .listener(new RequestListener<Drawable>() {
+                    //this some how notworking
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        // todo log exception to central service or something like that
+                        String test = "";
+                        // important to return false so the error placeholder can be placed
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target,
+                                                   DataSource dataSource, boolean isFirstResource) {
+                        // everything worked out, so probably nothing to do
+                        return false;
+                    }
+                })
+                .apply(options)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageView);
 
         mDetector = new GestureDetectorCompat(fragment.getContext(),new MyGestureListener());
@@ -71,13 +100,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
                 return true;
             }
         });
-
-
     }
-
 
     @Override
     public int getItemCount() {
+        ImageView iv = ((Manga)fragment).getIv();
+        iv.setVisibility(images.count() > 0 ? View.GONE : View.VISIBLE);
         return images.count();
     }
 
@@ -94,7 +122,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
 
     private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         private static final int SWIPE_MIN_DISTANCE = 5;
-        private static final int SWIPE_THRESHOLD_VELOCITY = 10;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 4;
         @Override
         public boolean onDown(MotionEvent e) {
             return true;
