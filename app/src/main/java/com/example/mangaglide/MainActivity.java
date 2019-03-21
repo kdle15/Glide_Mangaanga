@@ -45,7 +45,6 @@ public class MainActivity extends FragmentActivity {
     private int total_chapter_int = 0;
     private String current_chap = "0";
     private Manga_info manga = null;
-    private final String querry1 = "https://m.blogtruyen.com/timkiem?keyword=";
     private final static int REQUEST_CODE_1 = 1;
     private ArrayList<Link_info> ar_querry_item = null;
     private HashMap<String, String> file_content;
@@ -91,6 +90,8 @@ public class MainActivity extends FragmentActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String link = "";
+                int site = -1;
                 String content_string= text.getText().toString();
                 InputMethodManager inputManager =
                         (InputMethodManager) MainActivity.this.getBaseContext().
@@ -99,56 +100,20 @@ public class MainActivity extends FragmentActivity {
                         MainActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 switch (Blog) {
                     case "BlogTruyen":
-                        try {
-                            //using querry manga class to get all the manga with keyword
-                            ar_querry_item = new Querry_Manga().execute(querry1 + content_string).get();
-                            querry.removeAllViews();
-                            if(ar_querry_item != null){
-                                System.out.println("How many " + ar_querry_item.size());
-                                for(final Link_info q: ar_querry_item) {
-                                    TextView tv = new TextView(getApplicationContext());
-                                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                                            LinearLayout.LayoutParams.WRAP_CONTENT, // Width of TextView
-                                            LinearLayout.LayoutParams.WRAP_CONTENT); // Height of TextView
-                                    // Apply the layout parameters to TextView widget
-                                    tv.setLayoutParams(lp);
-                                    tv.setText(q.getTitle());
-                                    tv.setTextSize(20);
-                                    tv.setTextColor(Color.WHITE);
-                                    tv.setClickable(true);
-                                    tv.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            //get the link of the manga from search
-                                            onClik_manga = q.getUrl();
-                                            manga_info(onClik_manga);
-                                        }
-                                    });
-                                    // Set a text color for TextView text
-                                    querry.addView(tv);
-                                }
-                            }else{
-                                //no such item exists
-                                TextView tv = new TextView(getApplicationContext());
-                                tv.setText("NO SUCH MANGA");
-                                tv.setTextSize(22);
-                                tv.setTextColor(Color.WHITE);
-                                querry.addView(tv);
-
-                            }
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        final String querry1 = "https://m.blogtruyen.com/timkiem?keyword=";
+                        link = querry1 + content_string;
+                        site = 0;
                         break;
-                    case "NetTruyen":
-
+                    case "MangaKa":
+                        final String querry2 = "https://mangakakalot.com/search/";
+                        link = querry2 + content_string;
+                        site = 1;
                         break;
                     default:
 
                         break;
                 }
+                querry_manga(link, site);
             }
         });
         ar_querry_item = new ArrayList<>();
@@ -224,19 +189,76 @@ public class MainActivity extends FragmentActivity {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
             // Update UI to reflect text being shared
-            manga_info(sharedText);
+            int index = sharedText.indexOf("mangakakalot");
+            int site = -3;
+            if(index == -1){
+                site = 0;
+            }else{
+                site = 1;
+            }
+            manga_info(sharedText,site);
         }
     }
 
+    public void querry_manga(String link, final int site){
+        try {
+            //using querry manga class to get all the manga with keyword
+            ar_querry_item = new Querry_Manga(site).execute(link).get();
+            querry.removeAllViews();
+            if(ar_querry_item != null){
+                System.out.println("How many " + ar_querry_item.size());
+                for(final Link_info q: ar_querry_item) {
+                    TextView tv = new TextView(getApplicationContext());
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT, // Width of TextView
+                            LinearLayout.LayoutParams.WRAP_CONTENT); // Height of TextView
+                    // Apply the layout parameters to TextView widget
+                    tv.setLayoutParams(lp);
+                    tv.setText(q.getTitle());
+                    tv.setTextSize(20);
+                    tv.setTextColor(Color.WHITE);
+                    tv.setClickable(true);
+                    tv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //get the link of the manga from search
+                            onClik_manga = q.getUrl();
+                            System.out.println("Link is" + q.getUrl());
+                            manga_info(onClik_manga, site);
+                        }
+                    });
+                    // Set a text color for TextView text
+                    querry.addView(tv);
+                }
+            }else{
+                //no such item exists
+                TextView tv = new TextView(getApplicationContext());
+                tv.setText("NO SUCH MANGA");
+                tv.setTextSize(22);
+                tv.setTextColor(Color.WHITE);
+                querry.addView(tv);
+
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     //input a link out put update ui with manga detail coresspond to the passed link
-    public void manga_info(String url){
+    public void manga_info(String url, int site){
         //change link from mobile to desktop
-        url = url.substring(0, 8) + url.substring(10);
+        if(site == 0){
+            url = url.substring(0, 8) + url.substring(10);
+
+        }
         onClik_manga = url;
         System.out.println("URL is" + url);
         String[] urls = new String[]{onClik_manga};
         try {
-            manga = new GET_Manga_info(this).execute(urls).get();
+            manga = new GET_Manga_info(this, site).execute(urls).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

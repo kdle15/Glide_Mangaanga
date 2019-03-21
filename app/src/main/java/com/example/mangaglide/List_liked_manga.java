@@ -59,9 +59,17 @@ public class List_liked_manga extends Fragment {
                     public void onClick(View v) {
                         System.out.println("what is the link i clicked" + r);
                         ((MainActivity) getActivity()).setOnClik_manga(r);
+                        //blog truyen or mangaka
+                        int index = r.indexOf("mangakakalot");
+                        int site = -3;
+                        if(index == -1){
+                            site = 0;
+                        }else{
+                            site = 1;
+                        }
                         String[] urls = new String[]{r};
                         try {
-                            Manga_info manga = new GET_Manga_info(List_liked_manga.this.getActivity()).execute(urls).get();
+                            Manga_info manga = new GET_Manga_info(List_liked_manga.this.getActivity(), site).execute(urls).get();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         } catch (ExecutionException e) {

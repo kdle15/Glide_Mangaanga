@@ -11,8 +11,17 @@ public class Manga_link extends ImageURLInterface {
 
     public Manga_link(String urls) {
         final String[] url = new String[]{urls};
+        //if mangaka or not
+        int index = urls.indexOf("mangakakalot");
+        int site = -3;
+        if(index == -1){
+            site = 0;
+        }else{
+            site = 1;
+        }
+
         try {
-            images = new Link().execute(url).get();
+            images = new Link(site).execute(url).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

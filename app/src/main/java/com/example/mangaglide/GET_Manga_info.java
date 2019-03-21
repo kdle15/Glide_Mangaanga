@@ -32,10 +32,11 @@ public class GET_Manga_info extends AsyncTask<String, Void, Manga_info> {
     private String current_chap = "0";
     private boolean isLiked_global;
     private final static int REQUEST_CODE_1 = 1;
+    private int site;
 
-    public GET_Manga_info(Activity activity){
+    public GET_Manga_info(Activity activity, int site){
         mAct = activity;
-        System.out.println("hello1");
+        this.site = site;
     }
 
     @Override
@@ -43,44 +44,87 @@ public class GET_Manga_info extends AsyncTask<String, Void, Manga_info> {
         Manga_info c = null;
         String title_name = urls[0];
         final StringBuilder builder = new StringBuilder();
-        try {
-            Document doc = Jsoup.connect(urls[0]).get();
-            //get the intro
-            //Element links = doc.select(".manga-detail 1 bigclass ng-scope").first();
-            Element title = doc.select(".entry-title").first();
-            title_name = title.getElementsByTag("a").first().attr("title");
+        if(site == 0){
+            //blog truyen
+            try {
+                Document doc = Jsoup.connect(urls[0]).get();
+                //get the intro
+                //Element links = doc.select(".manga-detail 1 bigclass ng-scope").first();
+                Element title = doc.select(".entry-title").first();
+                title_name = title.getElementsByTag("a").first().attr("title");
 
-            //list chapter
-            Element listchapter = doc.select("#list-chapters").first();
-            ArrayList<String> ar = new ArrayList<>();
-            ArrayList<String> name = new ArrayList<>();
-            for(Element p: listchapter.children()){
-                Element a = p.getElementsByTag("a").first();
-                ar.add(prefix1+a.attr("href"));
-                name.add(a.attr("title"));
+                //list chapter
+                Element listchapter = doc.select("#list-chapters").first();
+                ArrayList<String> ar = new ArrayList<>();
+                ArrayList<String> name = new ArrayList<>();
+                for(Element p: listchapter.children()){
+                    Element a = p.getElementsByTag("a").first();
+                    ar.add(prefix1+a.attr("href"));
+                    name.add(a.attr("title"));
+                }
+
+                //get category
+                Elements category = doc.select(".category");
+                String cate = "";
+                for(Element p: category){
+                    Element a = p.getElementsByTag("a").first();
+                    cate += a.text() + " ";
+                }
+
+                //getIntroduction
+                Element content = doc.select(".content").first();
+                String intro = "";
+                for(Element p: content.getElementsByTag("p")){
+                    intro += p.text() + " ";
+                }
+
+                System.out.println("category is" + intro);
+
+                c = new Manga_info(title_name, String.valueOf(ar.size()), cate, intro, ar, name);
+
+            } catch (IOException e) {
+                builder.append("Error : ").append(e.getMessage()).append("\n");
             }
+        }
 
-            //get category
-            Elements category = doc.select(".category");
-            String cate = "";
-            for(Element p: category){
-                Element a = p.getElementsByTag("a").first();
-                cate += a.text() + " ";
+        if(site == 1){
+            System.out.println("here");
+            try {
+                Document doc = Jsoup.connect(urls[0]).get();
+                //get the intro
+                Element title = doc.select(".manga-info-text").first();
+                title_name = title.getElementsByTag("h1").first().text();
+
+
+                //list chapter
+                Element listchapter = doc.select(".chapter-list").first();
+                ArrayList<String> ar = new ArrayList<>();
+                ArrayList<String> name = new ArrayList<>();
+                for(Element p: listchapter.children()){
+                    Element a = p.getElementsByTag("a").first();
+                    ar.add(a.attr("href"));
+                    name.add(a.text());
+                }
+
+                //get category
+                Elements category = title.getElementsByTag("li");
+                String cate = "";
+                for(Element p: category){
+                    if(p.text().equals("Genres :")){
+                        Element a = p.getElementsByTag("a").first();
+                        cate += a.text() + " ";
+                    }
+                }
+
+                //getIntroduction
+                Element content = doc.select("#noidungm").first();
+                String intro = content.text();
+
+                c = new Manga_info(title_name, String.valueOf(ar.size()), cate, intro, ar, name);
+
+            } catch (IOException e) {
+                builder.append("Error : ").append(e.getMessage()).append("\n");
             }
-
-            //getIntroduction
-            Element content = doc.select(".content").first();
-            String intro = "";
-            for(Element p: content.getElementsByTag("p")){
-                intro += p.text() + " ";
-            }
-
-            System.out.println("category is" + intro);
-
-            c = new Manga_info(title_name, String.valueOf(ar.size()), cate, intro, ar, name);
-
-        } catch (IOException e) {
-            builder.append("Error : ").append(e.getMessage()).append("\n");
         }
         return c;
     }
